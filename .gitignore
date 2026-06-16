@@ -1,8 +1,9 @@
 .DS_Store
 /node_modules/
 /dist/
-npm-debug.log
+/coverage/
+*.log
+npm-debug.log*
+*.tgz
 /.idea/
 *.iml
-spec/**/dist
-
