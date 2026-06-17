@@ -9,7 +9,8 @@
     "releaseName": "v${version}"
   },
   "npm": {
-    "publish": true
+    "publish": true,
+    "skipChecks": true
   },
   "hooks": {
     "before:init": ["npm run check"]

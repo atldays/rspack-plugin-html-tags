@@ -37,6 +37,8 @@ permissions:
   contents: write
   # Required to publish to npm with provenance.
   id-token: write
+  # Required to open the master -> develop back-merge PR.
+  pull-requests: write
 
 jobs:
   release:
@@ -68,6 +70,9 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
+      # npm publish uses OIDC Trusted Publishing (configured on npmjs.com) — no
+      # NPM_TOKEN needed. Requires id-token: write (above) and npm >= 11.5.1
+      # (pinned above). Provenance is attached automatically.
       - name: Release
         run: |
           DRY=""
@@ -75,5 +80,16 @@ jobs:
           npx release-it ${{ inputs.version }} --npm.tag=${{ inputs.tag }} $DRY --ci
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_CONFIG_PROVENANCE: "true"
+
+      # After a real release, open a PR to merge the release commit (version bump
+      # + changelog) from master back into develop so develop never drifts.
+      - name: Back-merge release into develop
+        if: ${{ !inputs.dry_run }}
+        run: |
+          gh pr create --base develop --head master \
+            --title "chore: back-merge release into develop" \
+            --body "Automated sync of the release commit (version bump + changelog) from master." \
+            || echo "No back-merge PR created (already open or nothing to merge)."
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
