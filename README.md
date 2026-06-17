@@ -1,8 +1,5 @@
 # @rspackjs/plugin-html-tags
 
-> Define additional HTML tags — `scripts`, `links`, `metas` — to inject with
-> [`HtmlRspackPlugin`](https://rspack.dev/plugins/rspack/html-rspack-plugin).
-
 A self-contained TypeScript rewrite of
 [`html-rspack-tags-plugin`](https://github.com/rspack-contrib/html-rspack-tags-plugin)
 (itself a fork of [`html-webpack-tags-plugin`](https://github.com/jharris4/html-webpack-tags-plugin)
@@ -183,5 +180,5 @@ The option fields and runtime behaviour are otherwise unchanged from the origina
 
 ## License
 
-[MIT](./LICENSE) — original copyright © 2016 Jon Harris, fork © rspack-contrib,
+[MIT](./LICENSE.md) — original copyright © 2016 Jon Harris, fork © rspack-contrib,
 this rewrite © 2026 Anjey Tsibylskij.
