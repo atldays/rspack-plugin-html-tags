@@ -10,8 +10,8 @@ const plugin =
         new HtmlTagsRspackPlugin(options as HtmlTagsPluginOptions);
 
 describe("option validation", () => {
-    it("should throw an error if no options are provided", () => {
-        expect(plugin()).toThrow(/(options should be an object)/);
+    it("should not throw if no options are provided (acts as a no-op)", () => {
+        expect(plugin()).not.toThrow();
     });
 
     it("should throw an error if the options are not an object", () => {
@@ -536,6 +536,12 @@ function runTestsForAssetType(ext: string): void {
         it("should throw an error if any of the tags options do not end with .css or .js", () => {
             expect(plugin({tags: ["foo.css", "bad.txt", "bar.js"], append: false})).toThrow(
                 /(options\.tags could not determine asset type for \(bad\.txt\))/
+            );
+        });
+
+        it("matches extensions literally — 'fooajs' is not treated as '.js'", () => {
+            expect(plugin({tags: ["fooajs"], append: false})).toThrow(
+                /(options\.tags could not determine asset type for \(fooajs\))/
             );
         });
 

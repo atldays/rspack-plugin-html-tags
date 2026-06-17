@@ -13,7 +13,7 @@ export default defineConfig({
     // returns the class directly (matching the original package). `cjsInterop`
     // is intentionally NOT enabled — it would append a second
     // `module.exports = exports.default` and clobber the class with undefined.
-    target: "node22",
+    target: "node20",
     outExtension({format}) {
         return {js: format === "cjs" ? ".cjs" : ".js"};
     },

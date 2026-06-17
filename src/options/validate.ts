@@ -19,8 +19,6 @@ type Loose = Record<string, unknown>;
 
 type ExtensionOptionName = "jsExtensions" | "cssExtensions";
 
-const createExtensionsRegex = (extensions: string[]): RegExp => new RegExp(`.*(${extensions.join("|")})$`);
-
 const getExtensions = (options: Loose, optionExtensionName: ExtensionOptionName, optionPath: string): string[] => {
     const value = options[optionExtensionName];
     if (!isDefined(value)) {
@@ -40,8 +38,10 @@ const getExtensions = (options: Loose, optionExtensionName: ExtensionOptionName,
 };
 
 const getHasExtensions = (options: Loose, optionExtensionName: ExtensionOptionName, optionPath: string) => {
-    const regexp = createExtensionsRegex(getExtensions(options, optionExtensionName, optionPath));
-    return (value: string): boolean => regexp.test(value);
+    const extensions = getExtensions(options, optionExtensionName, optionPath);
+    // endsWith (not a regex) so a literal ".js" extension can't accidentally
+    // match a name like "fooajs" — the "." in a regex means "any character".
+    return (value: string): boolean => extensions.some(ext => value.endsWith(ext));
 };
 
 const getAssetTypeCheckers = (options: Loose, optionPath: string) => {

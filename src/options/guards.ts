@@ -29,6 +29,8 @@ export const isType = (type: unknown): type is TypeString => ASSET_TYPES.indexOf
 
 export const isTypeCss = (type: unknown): boolean => type === ASSET_TYPE_CSS;
 
-export const isFunctionReturningString = (v: unknown): boolean => isFunction(v) && isString(v("", ""));
+// Only checks the type — intentionally does NOT invoke the user's function (it
+// may have side effects); the "returns a string" contract is enforced by TS.
+export const isFunctionReturningString = (v: unknown): boolean => isFunction(v);
 
 export const isArrayOfString = (v: unknown): v is string[] => isArray(v) && v.every(i => isString(i));

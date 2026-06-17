@@ -20,7 +20,7 @@ export class HtmlTagsRspackPlugin {
 
     private readonly options: ValidatedOptions & {files?: string[]};
 
-    constructor(options?: HtmlTagsPluginOptions) {
+    constructor(options: HtmlTagsPluginOptions = {}) {
         this.options = getAllValidatedOptions(options, PLUGIN_NAME + ".options");
     }
 

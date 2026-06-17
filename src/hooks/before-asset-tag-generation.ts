@@ -42,7 +42,7 @@ export function createBeforeAssetTagGeneration(
 
         const getPath = (tag: TagObject): string => {
             if (isString(tag.sourcePath)) {
-                assetPromises.push(addAsset(tag.sourcePath, compilation));
+                assetPromises.push(addAsset(tag.sourcePath, compilation, tag.path));
             }
             return getTagPath(tag, options, pluginPublicPath, compilationHash);
         };
@@ -58,7 +58,7 @@ export function createBeforeAssetTagGeneration(
         if (metas) {
             metas.forEach((tag: MetaObject) => {
                 if (isString(tag.sourcePath)) {
-                    assetPromises.push(addAsset(tag.sourcePath, compilation));
+                    assetPromises.push(addAsset(tag.sourcePath, compilation, tag.path));
                 }
             });
         }

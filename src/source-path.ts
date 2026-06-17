@@ -3,12 +3,14 @@ import path from "node:path";
 import type {Compilation} from "@rspack/core";
 
 /**
- * Read a file from `sourcePath` and emit it as a compilation asset (under its
- * basename), registering it as a file dependency so rebuilds pick up changes.
+ * Read a file from `sourcePath` and emit it as a compilation asset, registering
+ * it as a file dependency so rebuilds pick up changes. The asset is emitted at
+ * `outputName` (the tag's output-relative `path`) so it matches the injected
+ * tag's reference; if omitted, the source file's basename is used.
  */
-export function addAsset(assetPath: string, compilation: Compilation): Promise<void> {
+export function addAsset(sourcePath: string, compilation: Compilation, outputName?: string): Promise<void> {
     const {webpack, context} = compilation.compiler;
-    const resolvedPath = path.resolve(context, assetPath);
+    const resolvedPath = path.resolve(context, sourcePath);
 
     return Promise.all([
         new Promise<fs.Stats>((resolve, reject) => {
@@ -19,9 +21,9 @@ export function addAsset(assetPath: string, compilation: Compilation): Promise<v
         }),
     ]).then(([stat, source]) => {
         const {size} = stat;
-        const basename = path.basename(resolvedPath);
+        const target = outputName ?? path.basename(resolvedPath);
         const rawSource = new webpack.sources.RawSource(source, true);
         compilation.fileDependencies.add(resolvedPath);
-        compilation.emitAsset(basename, rawSource, {size} as Parameters<Compilation["emitAsset"]>[2]);
+        compilation.emitAsset(target, rawSource, {size} as Parameters<Compilation["emitAsset"]>[2]);
     });
 }
