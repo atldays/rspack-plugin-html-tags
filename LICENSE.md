@@ -1,8 +1,8 @@
-The MIT License (MIT)
+# MIT License
 
-Copyright (c) 2016 Jon Harris (original html-webpack-tags-plugin)
-Copyright (c) 2024 rspack-contrib (html-rspack-tags-plugin fork)
-Copyright (c) 2026 Anjey Tsibylskij (@rspackjs/plugin-html-tags rewrite)
+- Copyright (c) 2016 Jon Harris (original html-webpack-tags-plugin)
+- Copyright (c) 2024 rspack-contrib (html-rspack-tags-plugin fork)
+- Copyright (c) 2026 Anjey Tsibylskij (@rspackjs/plugin-html-tags rewrite)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
