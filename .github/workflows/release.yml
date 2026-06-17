@@ -32,6 +32,11 @@ on:
         description: "Dry run (no publish/tag)"
         required: true
         default: false
+      skip_npm:
+        type: boolean
+        description: "Skip npm publish (git tag + GitHub release only — reconcile after a partial release)"
+        required: true
+        default: false
 
 permissions:
   contents: write
@@ -77,10 +82,16 @@ jobs:
         run: |
           DRY=""
           if [ "${{ inputs.dry_run }}" = "true" ]; then DRY="--dry-run"; fi
-          npx release-it ${{ inputs.version }} --npm.tag=${{ inputs.tag }} $DRY --ci
+          SKIP_NPM=""
+          if [ "${{ inputs.skip_npm }}" = "true" ]; then SKIP_NPM="--no-npm.publish"; fi
+          npx release-it ${{ inputs.version }} --npm.tag=${{ inputs.tag }} $DRY $SKIP_NPM --ci
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_CONFIG_PROVENANCE: "true"
+          # Machine-generated release commit — skip husky commit-msg/pre-commit
+          # hooks in CI (the conventional commit message above already satisfies
+          # commitlint; this is belt-and-suspenders for any future hook).
+          HUSKY: "0"
 
       # After a real release, open a PR to merge the release commit (version bump
       # + changelog) from master back into develop so develop never drifts.
