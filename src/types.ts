@@ -1,6 +1,6 @@
 // ---------------------------------------------------------------------------
-// Public option types (the drop-in contract preserved from the original
-// `html-rspack-tags-plugin` / `html-webpack-tags-plugin` typings).
+// Public option types — adapted from the original `html-rspack-tags-plugin` /
+// `html-webpack-tags-plugin` typings, renamed for this package.
 // ---------------------------------------------------------------------------
 
 export type AddHashFunction = (assetPath: string, hash: string) => string;
@@ -54,7 +54,7 @@ export interface MetaTagOptions extends BaseTagOptions {
     attributes: AttributesObject;
 }
 
-export interface Options extends CommonOptions {
+export interface HtmlTagsPluginOptions extends CommonOptions {
     append?: boolean;
     prependExternals?: boolean;
     jsExtensions?: string | string[];

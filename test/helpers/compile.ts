@@ -2,7 +2,7 @@ import {spawn} from "node:child_process";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import type {Options} from "../../src";
+import type {HtmlTagsPluginOptions} from "../../src";
 
 export {FIXTURES_PATH, FIXTURES_ENTRY, FIXTURES_STYLE, EXTERNALS_PATH} from "./paths";
 
@@ -21,7 +21,7 @@ export interface CompileParams {
     /** HtmlRspackPlugin options, or `false` to omit the html plugin entirely. */
     htmlOptions?: Record<string, unknown> | false;
     /** Our plugin's options (single, array, or `false` to omit). */
-    options?: Options | Options[] | false;
+    options?: HtmlTagsPluginOptions | HtmlTagsPluginOptions[] | false;
 }
 
 export interface CompileResult {

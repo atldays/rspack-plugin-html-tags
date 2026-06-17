@@ -1,13 +1,13 @@
-import HtmlRspackTagsPlugin from "../../src";
-import type {Options} from "../../src";
+import HtmlTagsRspackPlugin from "../../src";
+import type {HtmlTagsPluginOptions} from "../../src";
 import {FIXTURES_PATH} from "../helpers/paths";
 
 // Most of these cases deliberately pass invalid option shapes to assert the
 // runtime validation, so we funnel construction through a thunk that casts.
 const plugin =
-    (options?: unknown): (() => HtmlRspackTagsPlugin) =>
+    (options?: unknown): (() => HtmlTagsRspackPlugin) =>
     () =>
-        new HtmlRspackTagsPlugin(options as Options);
+        new HtmlTagsRspackPlugin(options as HtmlTagsPluginOptions);
 
 describe("option validation", () => {
     it("should throw an error if no options are provided", () => {

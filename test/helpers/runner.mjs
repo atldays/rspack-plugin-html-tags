@@ -6,7 +6,7 @@ import fs from "node:fs";
 import path from "node:path";
 import {fileURLToPath} from "node:url";
 import {CopyRspackPlugin, CssExtractRspackPlugin, HtmlRspackPlugin, rspack} from "@rspack/core";
-import HtmlRspackTagsPlugin from "../../dist/index.js";
+import HtmlTagsRspackPlugin from "../../dist/index.js";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const FIXTURES_PATH = path.join(here, "..", "fixtures");
@@ -44,10 +44,10 @@ try {
     const copyPlugins = copyOptions ? [new CopyRspackPlugin({patterns: copyOptions})] : [];
     const htmlPlugins = htmlOptions === false ? [] : [new HtmlRspackPlugin(htmlOptions ?? {})];
     const tagsPlugins = Array.isArray(options)
-        ? options.map(opts => new HtmlRspackTagsPlugin(opts))
+        ? options.map(opts => new HtmlTagsRspackPlugin(opts))
         : options === false || options === undefined
           ? []
-          : [new HtmlRspackTagsPlugin(options)];
+          : [new HtmlTagsRspackPlugin(options)];
 
     const config = {
         entry: {app: webpackEntry ?? FIXTURES_ENTRY, style: webpackStyle ?? FIXTURES_STYLE},

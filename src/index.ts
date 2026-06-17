@@ -1,9 +1,9 @@
-import {HtmlRspackTagsPlugin} from "./plugin";
+import {HtmlTagsRspackPlugin} from "./plugin";
 
-export default HtmlRspackTagsPlugin;
+export default HtmlTagsRspackPlugin;
 
 export type {
-    Options,
+    HtmlTagsPluginOptions,
     CommonOptions,
     BaseTagOptions,
     LinkTagOptions,

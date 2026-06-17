@@ -6,14 +6,14 @@
 A self-contained TypeScript rewrite of
 [`html-rspack-tags-plugin`](https://github.com/rspack-contrib/html-rspack-tags-plugin)
 (itself a fork of [`html-webpack-tags-plugin`](https://github.com/jharris4/html-webpack-tags-plugin)
-by Jon Harris). It keeps the same public `Options` contract but is published as
-a modern dual ESM/CJS package with a `@rspack/core: ^1 || ^2` peer range, so it
-installs cleanly alongside **Rspack 2** without `ERESOLVE` errors.
+by Jon Harris). It keeps the same tag-injection behaviour under its own typed
+API, published as a dual ESM/CJS package with a `@rspack/core: ^1 || ^2` peer
+range, so it installs cleanly alongside **Rspack 2** without `ERESOLVE` errors.
 
 - ✅ Works with **Rspack 1.x and 2.x** (`@rspack/core` peer `^1.0.13 || ^2`).
 - ✅ No dependency on `html-webpack-plugin` — hook types come from `@rspack/core`.
 - ✅ Strict TypeScript, dual **ESM + CJS** build, ships `.d.ts`.
-- ✅ Drop-in `Options` compatible with the original plugin.
+- ✅ Clean, typed options API (`HtmlTagsPluginOptions`).
 
 ## Installation
 
@@ -31,12 +31,12 @@ Requires Node `>=22.12`.
 ```js
 // rspack.config.mjs
 import {rspack} from "@rspack/core";
-import HtmlRspackTagsPlugin from "@rspackjs/plugin-html-tags";
+import HtmlTagsRspackPlugin from "@rspackjs/plugin-html-tags";
 
 export default {
   plugins: [
     new rspack.HtmlRspackPlugin(),
-    new HtmlRspackTagsPlugin({
+    new HtmlTagsRspackPlugin({
       tags: ["a-script.js", "a-style.css"],
       append: true,
     }),
@@ -47,13 +47,13 @@ export default {
 CommonJS works too — `require("@rspackjs/plugin-html-tags")` returns the class:
 
 ```js
-const HtmlRspackTagsPlugin = require("@rspackjs/plugin-html-tags");
+const HtmlTagsRspackPlugin = require("@rspackjs/plugin-html-tags");
 ```
 
-The named `Options` type is exported for TypeScript consumers:
+The named `HtmlTagsPluginOptions` type is exported for TypeScript consumers:
 
 ```ts
-import type {Options} from "@rspackjs/plugin-html-tags";
+import type {HtmlTagsPluginOptions} from "@rspackjs/plugin-html-tags";
 ```
 
 ## Examples
@@ -61,7 +61,7 @@ import type {Options} from "@rspackjs/plugin-html-tags";
 ### Scripts, links and metas
 
 ```js
-new HtmlRspackTagsPlugin({
+new HtmlTagsRspackPlugin({
   scripts: [{path: "vendor.js", attributes: {defer: true}}],
   links: [{path: "theme.css", attributes: {media: "screen"}}],
   metas: [{attributes: {name: "theme-color", content: "#222"}}],
@@ -77,7 +77,7 @@ When multiple `HtmlRspackPlugin` instances emit different HTML files, restrict a
 tag set to specific outputs (matched with [minimatch](https://github.com/isaacs/minimatch)):
 
 ```js
-new HtmlRspackTagsPlugin({
+new HtmlTagsRspackPlugin({
   files: ["index.html"],
   tags: ["only-on-index.js"],
 });
@@ -86,7 +86,7 @@ new HtmlRspackTagsPlugin({
 ### Hash and public path
 
 ```js
-new HtmlRspackTagsPlugin({
+new HtmlTagsRspackPlugin({
   tags: ["app.js"],
   hash: true, // append `?<compilation hash>` — also accepts a string or (assetPath, hash) => string
   publicPath: "https://cdn.example.com/", // prefix — also accepts true/false or (assetPath, publicPath) => string
@@ -98,7 +98,7 @@ new HtmlRspackTagsPlugin({
 ### Globbing files into tags
 
 ```js
-new HtmlRspackTagsPlugin({
+new HtmlTagsRspackPlugin({
   links: [{path: "assets", globPath: "src/icons", glob: "*.css", globFlatten: false}],
 });
 ```
@@ -106,7 +106,7 @@ new HtmlRspackTagsPlugin({
 ### Copying a source file into the output (`sourcePath`)
 
 ```js
-new HtmlRspackTagsPlugin({
+new HtmlTagsRspackPlugin({
   links: [{path: "favicon.ico", sourcePath: "src/favicon.ico", attributes: {rel: "icon"}}],
 });
 ```
@@ -116,7 +116,7 @@ new HtmlRspackTagsPlugin({
 Registers the package as a webpack/rspack external and injects its script tag:
 
 ```js
-new HtmlRspackTagsPlugin({
+new HtmlTagsRspackPlugin({
   scripts: [
     {
       path: "https://unpkg.com/react/umd/react.production.min.js",
@@ -167,12 +167,14 @@ Per-tag options (`LinkTagOptions` / `ScriptTagOptions` / `MetaTagOptions`): `pat
 
 ### Differences from `html-rspack-tags-plugin`
 
+- Renamed exports: the class is `HtmlTagsRspackPlugin` (was `HtmlRspackTagsPlugin`)
+  and the options type is `HtmlTagsPluginOptions` (was `Options`).
 - Removed the `html-webpack-plugin` peer dependency and the `htmlPluginName`
   option / `getHooks` fallback — this package targets `HtmlRspackPlugin` only.
 - Rewritten in TypeScript; published as dual ESM + CJS with type declarations.
 - The "no html plugin" error message now references `HtmlRspackPlugin`.
 
-The public `Options` type and runtime behaviour are otherwise unchanged.
+The option fields and runtime behaviour are otherwise unchanged from the original.
 
 ## Credits
 

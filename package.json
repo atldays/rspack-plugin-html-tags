@@ -61,11 +61,11 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/atldays/html-rspack-tags-plugin.git"
+    "url": "git+https://github.com/atldays/rspack-plugin-html-tags.git"
   },
-  "homepage": "https://github.com/atldays/html-rspack-tags-plugin#readme",
+  "homepage": "https://github.com/atldays/rspack-plugin-html-tags#readme",
   "bugs": {
-    "url": "https://github.com/atldays/html-rspack-tags-plugin/issues"
+    "url": "https://github.com/atldays/rspack-plugin-html-tags/issues"
   },
   "peerDependencies": {
     "@rspack/core": "^1.0.13 || ^2"

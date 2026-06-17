@@ -5,12 +5,12 @@ import {getShouldSkip} from "./files";
 import {registerExternals} from "./externals";
 import {createBeforeAssetTagGeneration, type SharedState} from "./hooks/before-asset-tag-generation";
 import {createAlterAssetTagGroups} from "./hooks/alter-asset-tag-groups";
-import type {HtmlRspackPluginHooks, Options, TagObject, ValidatedOptions} from "./types";
+import type {HtmlRspackPluginHooks, HtmlTagsPluginOptions, TagObject, ValidatedOptions} from "./types";
 
-const PLUGIN_NAME = "HtmlRspackTagsPlugin";
-const TAP_NAME = "htmlRspackTagsPlugin";
+const PLUGIN_NAME = "HtmlTagsRspackPlugin";
+const TAP_NAME = "htmlTagsRspackPlugin";
 
-export class HtmlRspackTagsPlugin {
+export class HtmlTagsRspackPlugin {
     /**
      * Internal validation helpers, exposed for backwards compatibility with the
      * original `.api` surface. Not part of the supported public API.
@@ -20,7 +20,7 @@ export class HtmlRspackTagsPlugin {
 
     private readonly options: ValidatedOptions & {files?: string[]};
 
-    constructor(options?: Options) {
+    constructor(options?: HtmlTagsPluginOptions) {
         this.options = getAllValidatedOptions(options, PLUGIN_NAME + ".options");
     }
 
@@ -37,7 +37,7 @@ export class HtmlRspackTagsPlugin {
             const htmlPlugins = compilation.options.plugins.filter(plugin => plugin instanceof HtmlRspackPlugin);
             if (htmlPlugins.length === 0) {
                 throw new Error(
-                    "Error running html-rspack-tags-plugin, are you sure you have HtmlRspackPlugin before it in your rspack config's plugins?"
+                    "Error running HtmlTagsRspackPlugin, are you sure you have HtmlRspackPlugin before it in your rspack config's plugins?"
                 );
             }
 
