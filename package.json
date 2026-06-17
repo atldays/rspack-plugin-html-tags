@@ -1,6 +1,6 @@
 {
   "name": "@rspackjs/plugin-html-tags",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "An Rspack plugin to inject extra scripts, links, and meta tags via HtmlRspackPlugin.",
   "type": "module",
   "main": "./dist/index.cjs",
