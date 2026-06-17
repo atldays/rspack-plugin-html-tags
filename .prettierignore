@@ -1,0 +1,12 @@
+dist
+coverage
+node_modules
+package-lock.json
+pnpm-lock.yaml
+CHANGELOG.md
+LICENSE.md
+*.tgz
+
+# Test fixtures are intentionally hand-crafted; formatting them would change
+# build output and break assertions.
+test/fixtures

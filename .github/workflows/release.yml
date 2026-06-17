@@ -1,12 +1,11 @@
-
-name: Release Full
+name: Release
 
 on:
   workflow_dispatch:
     inputs:
       version:
         type: choice
-        description: "Release Version Type"
+        description: "Release version type"
         required: true
         default: "patch"
         options:
@@ -17,63 +16,80 @@ on:
           - patch
           - prepatch
           - prerelease
-
       tag:
         type: choice
-        description: "Release Npm Tag"
+        description: "npm dist-tag"
         required: true
         default: "latest"
         options:
-          - canary
-          - nightly
           - latest
+          - next
           - beta
           - alpha
-      
+          - canary
       dry_run:
         type: boolean
-        description: "DryRun release"
+        description: "Dry run (no publish/tag)"
         required: true
         default: false
 
 permissions:
-  # To publish packages with provenance
+  contents: write
+  # Required to publish to npm with provenance.
   id-token: write
+  # Required to open the master -> develop back-merge PR.
+  pull-requests: write
 
 jobs:
   release:
     name: Release
-    permissions:
-      contents: write
-      # To publish packages with provenance
-      id-token: write
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Install Pnpm
-        run: corepack enable
+        with:
+          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
-          cache: "pnpm"
+          node-version: 22
+          cache: "npm"
+          registry-url: "https://registry.npmjs.org"
 
-      - name: Install Dependencies
-        run: pnpm install
+      # Node 22 ships npm 10, which dedupes some deps differently than the npm 11
+      # used to generate the lockfile. Pin npm 11 so `npm ci` stays in sync.
+      - name: Pin npm to 11
+        run: npm i -g npm@11
 
-      - name: Run Test
-        run: pnpm run test
-      
-      - name: Try release to npm
-        run: pnpm run release
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      # npm publish uses OIDC Trusted Publishing (configured on npmjs.com) — no
+      # NPM_TOKEN needed. Requires id-token: write (above) and npm >= 11.5.1
+      # (pinned above). Provenance is attached automatically.
+      - name: Release
+        run: |
+          DRY=""
+          if [ "${{ inputs.dry_run }}" = "true" ]; then DRY="--dry-run"; fi
+          npx release-it ${{ inputs.version }} --npm.tag=${{ inputs.tag }} $DRY --ci
         env:
-          DRY_RUN: ${{ inputs.dry_run }}
-          TAG: ${{ inputs.tag }}
-          VERSION: ${{ inputs.version }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_CONFIG_PROVENANCE: "true"
 
-  
+      # After a real release, open a PR to merge the release commit (version bump
+      # + changelog) from master back into develop so develop never drifts.
+      - name: Back-merge release into develop
+        if: ${{ !inputs.dry_run }}
+        run: |
+          gh pr create --base develop --head master \
+            --title "chore: back-merge release into develop" \
+            --body "Automated sync of the release commit (version bump + changelog) from master." \
+            || echo "No back-merge PR created (already open or nothing to merge)."
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

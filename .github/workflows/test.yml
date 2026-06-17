@@ -1,36 +1,42 @@
 name: Test
 
-# Controls when the action will run.
 on:
-  # Triggers the workflow on pull request events but only for the main branch
   pull_request:
-    branches: [main]
+    branches: [master, develop]
   push:
-    branches: [main]
-  # Allows you to run this workflow manually from the Actions tab
+    branches: [master, develop]
   workflow_dispatch:
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   test:
     runs-on: ubuntu-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install Pnpm
-        run: corepack enable
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
-          cache: "pnpm"
+          node-version: 22
+          cache: "npm"
 
-      - name: Install Dependencies
-        run: pnpm install
+      # Node 22 ships npm 10, which dedupes some deps differently than the npm 11
+      # used to generate the lockfile. Pin npm 11 so `npm ci` stays in sync.
+      - name: Pin npm to 11
+        run: npm i -g npm@11
 
-      - name: Run Test
-        run: pnpm run test
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Format check
+        run: npm run format:check
+
+      - name: Lint
+        run: npm run lint
+
+      # `npm test` builds (pretest) then runs unit + e2e (real Rspack builds).
+      - name: Test
+        run: npm test
