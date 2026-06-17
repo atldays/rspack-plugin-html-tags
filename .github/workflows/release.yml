@@ -93,6 +93,22 @@ jobs:
           # commitlint; this is belt-and-suspenders for any future hook).
           HUSKY: "0"
 
+      # release-it's own GitHub-release step is disabled (github.release: false)
+      # because release-it@17 passes `log: null` to Octokit, which then crashes
+      # on `log.debug` ("Cannot read properties of null"). The git tag is already
+      # pushed by release-it above, so create the release from it with gh, whose
+      # CLI is preinstalled and token-authenticated on the runner.
+      - name: GitHub Release
+        if: ${{ !inputs.dry_run }}
+        run: |
+          VERSION="$(node -p "require('./package.json').version")"
+          gh release create "v${VERSION}" \
+            --title "v${VERSION}" \
+            --generate-notes \
+            --verify-tag
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       # After a real release, open a PR to merge the release commit (version bump
       # + changelog) from master back into develop so develop never drifts.
       - name: Back-merge release into develop
