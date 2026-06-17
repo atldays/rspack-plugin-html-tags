@@ -1,5 +1,10 @@
 # @rspackjs/plugin-html-tags
 
+[![npm version](https://img.shields.io/npm/v/@rspackjs/plugin-html-tags.svg?logo=npm&style=for-the-badge)](https://www.npmjs.com/package/@rspackjs/plugin-html-tags)
+[![npm downloads](https://img.shields.io/npm/dm/@rspackjs/plugin-html-tags.svg?style=for-the-badge&color=blue)](https://www.npmjs.com/package/@rspackjs/plugin-html-tags)
+[![CI](https://img.shields.io/github/actions/workflow/status/atldays/rspack-plugin-html-tags/test.yml?style=for-the-badge)](https://github.com/atldays/rspack-plugin-html-tags/actions/workflows/test.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE.md)
+
 A self-contained TypeScript rewrite of
 [`html-rspack-tags-plugin`](https://github.com/rspack-contrib/html-rspack-tags-plugin)
 (itself a fork of [`html-webpack-tags-plugin`](https://github.com/jharris4/html-webpack-tags-plugin)
