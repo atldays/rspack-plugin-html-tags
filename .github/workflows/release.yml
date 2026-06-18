@@ -60,12 +60,14 @@ jobs:
         with:
           node-version: 22
           cache: "npm"
-          registry-url: "https://registry.npmjs.org"
 
-      # Node 22 ships npm 10, which dedupes some deps differently than the npm 11
-      # used to generate the lockfile. Pin npm 11 so `npm ci` stays in sync.
-      - name: Pin npm to 11
-        run: npm i -g npm@11
+      # Node 22 ships npm 10, which resolves deps differently than the npm 11
+      # used to generate the lockfile. Pin an exact npm 11 so `npm ci` stays in
+      # sync and releases are reproducible (matches the addon-bone pipeline).
+      - name: Update npm
+        run: |
+          npm i -g npm@11.7.0
+          npm -v
 
       - name: Install dependencies
         run: npm ci
@@ -75,9 +77,9 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      # npm publish uses OIDC Trusted Publishing (configured on npmjs.com) — no
-      # NPM_TOKEN needed. Requires id-token: write (above) and npm >= 11.5.1
-      # (pinned above). Provenance is attached automatically.
+      # release-it runs the whole lifecycle: bump -> npm publish -> commit -> tag
+      # -> push -> GitHub release. npm publish uses OIDC Trusted Publishing (no
+      # NPM_TOKEN; needs id-token: write + npm >= 11.5.1 + publishConfig.provenance).
       - name: Release
         run: |
           DRY=""
@@ -87,10 +89,9 @@ jobs:
           npx release-it ${{ inputs.version }} --npm.tag=${{ inputs.tag }} $DRY $SKIP_NPM --ci
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_CONFIG_PROVENANCE: "true"
-          # Machine-generated release commit — skip husky commit-msg/pre-commit
-          # hooks in CI (the conventional commit message above already satisfies
-          # commitlint; this is belt-and-suspenders for any future hook).
+          # Keep release-it and plugin logs visible when a release is run manually.
+          DEBUG: "release-it:*,@release-it/*"
+          # Machine-generated commit — skip husky commit-msg/pre-commit hooks in CI.
           HUSKY: "0"
 
       # After a real release, open a PR to merge the release commit (version bump
