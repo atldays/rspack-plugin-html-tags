@@ -24,7 +24,7 @@ npm install -D @rspackjs/plugin-html-tags
 ```
 
 `@rspack/core` is a peer dependency (you already have it in an Rspack project).
-Requires Node `>=20.19` (matching `@rspack/core`).
+Requires Node `^20.19.0 || ^22.13.0 || >=24.0.0` (matching the package `engines` range).
 
 ## Usage
 

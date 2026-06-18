@@ -89,10 +89,7 @@ jobs:
           npx release-it ${{ inputs.version }} --npm.tag=${{ inputs.tag }} $DRY $SKIP_NPM --ci
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # release-it@17 passes `log: this.config.isDebug ? console : null` to
-          # Octokit; without DEBUG, isDebug is false -> log is null -> the
-          # GitHub-release step crashes on `log.debug`. Setting DEBUG makes it
-          # log to console instead. (Same fix the addon-bone pipeline uses.)
+          # Keep release-it and plugin logs visible when a release is run manually.
           DEBUG: "release-it:*,@release-it/*"
           # Machine-generated commit — skip husky commit-msg/pre-commit hooks in CI.
           HUSKY: "0"

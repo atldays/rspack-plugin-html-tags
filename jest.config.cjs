@@ -5,6 +5,7 @@ module.exports = {
     testMatch: ["**/*.spec.ts"],
     setupFilesAfterEnv: ["<rootDir>/test/setup.ts"],
     testTimeout: 60000,
+    transformIgnorePatterns: ["/node_modules/(?!(@exodus/bytes|encoding-sniffer)/)"],
     transform: {
         "^.+\\.(t|j)sx?$": [
             "@swc/jest",
